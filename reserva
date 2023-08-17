@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sistema de Hotel - Reservas</title>
+</head>
+<body>
+    <h1>Reservas de Quartos</h1>
+    
+    <?php
+    // Configurações de conexão com o banco de dados 
+    $servername = "localhost";
+    $username = "seu_usuario";
+    $password = "sua_senha";
+    $dbname = "nome_do_banco";
+    
+    // Conectando ao banco de dados
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    // Verificando a conexão
+    if ($conn->connect_error) {
+        die("Falha na conexão: " . $conn->connect_error);
+    }
+    
+    // Consulta para obter as reservas
+    $query = "SELECT r.id, r.tipo_quarto, r.nome_cliente, r.data_entrada, r.data_saida, q.nome AS nome_quarto, c.nome AS nome_cliente
+              FROM reservas r
+              JOIN tipo_quarto q ON r.tipo_quarto = q.id
+              JOIN cliente c ON r.nome_cliente = c.id";
+    
+    $result = $conn->query($query);
+    
+    if ($result->num_rows > 0) {
+        echo '<table border="1">
+              <tr>
+                <th>ID</th>
+                <th>Tipo de Quarto</th>
+                <th>Nome do Cliente</th>
+                <th>Data de Entrada</th>
+                <th>Data de Saída</th>
+              </tr>';
+              
+        while ($row = $result->fetch_assoc()) {
+            echo '<tr>
+                  <td>' . $row["id"] . '</td>
+                  <td>' . $row["nome_quarto"] . '</td>
+                  <td>' . $row["nome_cliente"] . '</td>
+                  <td>' . $row["data_entrada"] . '</td>
+                  <td>' . $row["data_saida"] . '</td>
+                </tr>';
+        }
+        
+        echo '</table>';
+    } else {
+        echo "Nenhuma reserva foi encontrada.";
+    }
+    
+    // Fechar a conexão com bdd
+    $conn->close();
+    ?>
+</body>
+</html>
